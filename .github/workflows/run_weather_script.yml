@@ -25,13 +25,13 @@ jobs:
             
             - name: Run weather_logging_script.py
               env:
-                OPENWEATHER_API_URL: https://api.openweathermap.org/data/2.5/weather?lat=40.2942&lon=-74.7247&appid=5ea0a017f483f25bd21c215fa555c809
-                LVILLE_WEATHER_BASE_URL: https://owc.enterprise.earthnetworks.com/Data/GetData.ashx
-                LVILLE_USER_AGENT: Mozilla/5.0 (iPhone; CPU iPhone OS 16_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.6 Mobile/15E148 Safari/604.1
-                LVILLE_REFERER: https://owc.enterprise.earthnetworks.com/Graphs/HourlyObs.aspx?aid=8334&pid=3&station_id=LWRTR&units=english&culture_id=en-US
-                DATABASE_USER: postgres.tpciwzjsmjpozcirkcgs
-                DATABASE_PASSWORD: qTe99ASyue1botOA
-                DATABASE_PORT: 5432
-                DATABASE_HOST: aws-0-us-east-1.pooler.supabase.com
-                DATABASE_NAME: postgres
+                OPENWEATHER_API_URL: ${{ secrets.OPENWEATHER_API_URL }}
+                LVILLE_WEATHER_BASE_URL: ${{ secrets.LVILLE_WEATHER_BASE_URL }}
+                LVILLE_USER_AGENT: ${{ secrets.LVILLE_USER_AGENT }}
+                LVILLE_REFERER: ${{ secrets.LVILLE_REFERER }}
+                DATABASE_USER: ${{ secrets.DATABASE_USER }}
+                DATABASE_PASSWORD: ${{ secrets.DATABASE_PASSWORD }}
+                DATABASE_PORT: ${{ secrets.DATABASE_PORT }}
+                DATABASE_HOST: ${{ secrets.DATABASE_HOST }}
+                DATABASE_NAME: ${{ secrets.DATABASE_NAME }}
               run: python weather_logging_script.py
