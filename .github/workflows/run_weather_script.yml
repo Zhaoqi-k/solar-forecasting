@@ -1,8 +1,8 @@
-name: Weather Script Every 15 Minutes
+name: Weather Script Every 5 Minutes
 
 on:
     schedule:
-        - cron: "*/15 * * * *"
+        - cron: "*/5 * * * *"
     workflow_dispatch:
 
 jobs:

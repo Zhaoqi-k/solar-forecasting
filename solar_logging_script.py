@@ -41,7 +41,7 @@ solar_params = {
         "start": f"{start_time}",
         "end": f"{end_time}",
         "tz": "US/Eastern",
-        "gran": "15min"
+        "gran": "5min"
     }
 solar_headers = {
         "Accept": "application/json",
@@ -54,6 +54,7 @@ try:
         headers=solar_headers
     )
     solar_result = solar_response.json()
+    logging.info(solar_response.url, solar_result)
     solar_data = solar_result["data"]
 except Exception as e:
     logging.error("Error fetching data from solar API")

@@ -20,7 +20,7 @@ logging.basicConfig(
 load_dotenv()
 
 now = datetime.now(tz=ZoneInfo("GMT")) - timedelta(minutes=15)
-start_time = now - timedelta(minutes=4)
+start_time = now - timedelta(minutes=2)
 
 start_time = start_time.strftime("%a, %d %b %Y %H:%M:%S GMT")
 end_time = now.strftime("%a, %d %b %Y %H:%M:%S GMT")
