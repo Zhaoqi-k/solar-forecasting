@@ -1,0 +1,38 @@
+name: Solar Script Every Day
+
+on:
+    schedule:
+        - cron: "59 23 * * *"
+    workflow_dispatch:
+
+jobs:
+    run-weather:
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v4
+
+            - name: Set up Python
+              uses: actions/setup-python@v5
+              with:
+                python-version: "3.11"
+            
+            - name: Install dependencies
+              run: |
+                python -m pip install --upgrade pip
+                pip install -r requirements.txt
+            
+            - name: Run solar_logging_script.py
+              env:
+                SOLAR_CLIENT_ID: e389ad01c1e7426f40b4b8400dd42f9c
+                SOLAR_CLIENT_SECRET: 6f7b1c31889bf8a2d2791d64fd32238c
+                REFRESH_TOKEN: ceede18c748c398110170fb7a6088cf8
+                REFRESH_URL: https://api.solar.com/oauth2/token
+                SOLAR_API_URL: https://api.locusenergy.com/v3/sites/3793015/data
+                DATABASE_USER: postgres.tpciwzjsmjpozcirkcgs
+                DATABASE_PASSWORD: qTe99ASyue1botOA
+                DATABASE_PORT: 5432
+                DATABASE_HOST: aws-0-us-east-1.pooler.supabase.com
+                DATABASE_NAME: postgres
+              run: python weather_logging_script.py
