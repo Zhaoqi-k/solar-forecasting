@@ -60,7 +60,6 @@ except Exception as e:
 try:
     obs_utc = lville_data["ObservationTimeUtc"].strip("Z")
     utc_time = datetime.strptime(obs_utc, "%Y-%m-%dT%H:%M:%S")
-    est_time = utc_time.replace(tzinfo=ZoneInfo("UTC")).astimezone(ZoneInfo("America/New_York"))
     
     keys = {
         "HeatIndexC": "heat_index",
@@ -99,7 +98,7 @@ try:
     cursor.execute(
         """INSERT INTO weather_data (date, cloud_cover, heat_index, humidity, rain, snow, solar_irr, temp, wind)
         VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)""",
-        (est_time, cloud_cover, heat_index, humidity, rain_rate, snow_rate, solar_irr, temp, wind_speed)
+        (utc_time, cloud_cover, heat_index, humidity, rain_rate, snow_rate, solar_irr, temp, wind_speed)
     )
     connection.commit()
     cursor.close()
