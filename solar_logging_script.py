@@ -10,7 +10,7 @@ import logging
 import pandas as pd
 
 logging.basicConfig(
-    level=logging.ERROR,
+    level=logging.INFO,
     format="%(asctime)s %(levelname)s:%(message)s",
     handlers=[
         logging.FileHandler("logs/solar_logging.log"),
