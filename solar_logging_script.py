@@ -14,7 +14,7 @@ logging.basicConfig(
     level=logging.ERROR,
     format="%(asctime)s %(levelname)s:%(message)s",
     handlers=[
-        logging.FileHandler("/Users/kimberley/Desktop/solar-forecasting-project/logs/solar_logging.log"),
+        logging.FileHandler("logs/solar_logging.log"),
         logging.StreamHandler()
     ]
 )
