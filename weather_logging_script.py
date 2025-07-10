@@ -12,15 +12,14 @@ logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s %(levelname)s:%(message)s",
     handlers=[
-        logging.FileHandler("logs/weather_logging.log"),
-        logging.StreamHandler()
+        logging.FileHandler("logs/weather_logging.log")
     ]
 )
 
 load_dotenv()
 
 now = datetime.now(tz=ZoneInfo("GMT")) - timedelta(minutes=15)
-start_time = now - timedelta(minutes=2)
+start_time = now - timedelta(minutes=4)
 
 start_time = start_time.strftime("%a, %d %b %Y %H:%M:%S GMT")
 end_time = now.strftime("%a, %d %b %Y %H:%M:%S GMT")

@@ -13,8 +13,7 @@ logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s %(levelname)s:%(message)s",
     handlers=[
-        logging.FileHandler("logs/solar_logging.log"),
-        logging.StreamHandler()
+        logging.FileHandler("logs/solar_logging.log")
     ]
 )
 
