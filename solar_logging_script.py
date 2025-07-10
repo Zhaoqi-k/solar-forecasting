@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# filepath: /Users/kimberley/Desktop/solar-forecasting-project/solar_logging_script.py
 
 import os
 from dotenv import load_dotenv
