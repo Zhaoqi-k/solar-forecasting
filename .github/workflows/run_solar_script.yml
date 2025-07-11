@@ -35,4 +35,4 @@ jobs:
                 DATABASE_PORT: ${{ secrets.DATABASE_PORT }}
                 DATABASE_HOST: ${{ secrets.DATABASE_HOST }}
                 DATABASE_NAME: ${{ secrets.DATABASE_NAME }}
-              run: python weather_logging_script.py
+              run: python solar_logging_script.py
