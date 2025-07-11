@@ -10,11 +10,9 @@ import logging
 import pandas as pd
 
 logging.basicConfig(
+    filename="logs/solar_logging.log",
     level=logging.INFO,
-    format="%(asctime)s %(levelname)s:%(message)s",
-    handlers=[
-        logging.FileHandler("logs/solar_logging.log")
-    ]
+    format="%(asctime)s %(levelname)s:%(message)s"
 )
 
 load_dotenv()

@@ -9,11 +9,9 @@ from zoneinfo import ZoneInfo
 import logging
 
 logging.basicConfig(
+    filename="logs/weather_logging.log",
     level=logging.INFO,
-    format="%(asctime)s %(levelname)s:%(message)s",
-    handlers=[
-        logging.FileHandler("logs/weather_logging.log")
-    ]
+    format="%(asctime)s %(levelname)s:%(message)s"
 )
 
 load_dotenv()
