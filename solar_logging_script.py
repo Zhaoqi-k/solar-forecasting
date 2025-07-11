@@ -15,7 +15,8 @@ logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s %(levelname)s:%(message)s",
     handlers=[
-        logging.FileHandler("logs/solar_logging.log")
+        logging.FileHandler("logs/solar_logging.log"),
+        logging.StreamHandler()
     ]
 )
 
@@ -86,5 +87,9 @@ try:
     connection.commit()
     cursor.close()
     connection.close()
+    logging.info("Solar data inserted successfully")
 except Exception as e:
     logging.error(f"Error connecting to the database: {e}")
+
+for handler in logging.root.handlers:
+    handler.flush()
