@@ -1,8 +1,8 @@
 name: Solar Script Every Day
 
 on:
-    schedule:
-        - cron: "45 11 * * *"
+    #schedule:
+        #- cron: "45 11 * * *"
     workflow_dispatch:
 
 jobs:

@@ -1,8 +1,8 @@
 name: Weather Script Every 5 Minutes
 
 on:
-    schedule:
-        - cron: "*/5 * * * *"
+    #schedule:
+        #- cron: "*/5 * * * *"
     workflow_dispatch:
 
 jobs:
@@ -23,6 +23,12 @@ jobs:
                 python -m pip install --upgrade pip
                 pip install -r requirements.txt
             
+            - name: Upload log file
+              uses: actions/upload-artifact@v3
+              with:
+                name: weather-logs
+                path: logs/weather_logging.log
+
             - name: Run weather_logging_script.py
               env:
                 OPENWEATHER_API_URL: ${{ secrets.OPENWEATHER_API_URL }}
