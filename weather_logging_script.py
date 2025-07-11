@@ -16,11 +16,10 @@ logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s %(levelname)s:%(message)s",
     handlers=[
-        logging.FileHandler(log_path)
+        logging.FileHandler(log_path),
+        logging.StreamHandler()
     ]
 )
-
-logging.info("Script started successfully")
 
 load_dotenv()
 

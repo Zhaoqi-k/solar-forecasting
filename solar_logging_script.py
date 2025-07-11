@@ -11,11 +11,13 @@ import pandas as pd
 
 os.makedirs("logs", exist_ok=True)
 
+log_path = os.path.join(os.path.dirname(__file__), "logs", "solar_logging.log")
+
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s %(levelname)s:%(message)s",
     handlers=[
-        logging.FileHandler("logs/solar_logging.log"),
+        logging.FileHandler(log_path),
         logging.StreamHandler()
     ]
 )
