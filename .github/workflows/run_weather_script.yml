@@ -24,7 +24,7 @@ jobs:
                 pip install -r requirements.txt
             
             - name: Upload log file
-              uses: actions/upload-artifact@v3
+              uses: actions/upload-artifact@v4
               with:
                 name: weather-logs
                 path: logs/weather_logging.log
