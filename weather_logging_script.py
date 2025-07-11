@@ -10,13 +10,17 @@ import logging
 
 os.makedirs("logs", exist_ok=True)
 
+log_path = os.path.join(os.path.dirname(__file__), "logs", "weather_logging.log")
+
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s %(levelname)s:%(message)s",
     handlers=[
-        logging.FileHandler("logs/weather_logging.log")
+        logging.FileHandler(log_path)
     ]
 )
+
+logging.info("Script started successfully")
 
 load_dotenv()
 
