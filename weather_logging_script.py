@@ -81,10 +81,10 @@ try:
     wind_speed = values["wind_speed"]
 except Exception as e:
     logging.error(f"Error indexing Lville API data: {e}")
-try:
+"""try:
     cloud_cover = ow_result["clouds"]["all"]
 except Exception as e:
-    logging.error(f"Error indexing OpenWeather API data: {e}")
+    logging.error(f"Error indexing OpenWeather API data: {e}")"""
 
 try:
     connection = psycopg2.connect(
@@ -97,9 +97,9 @@ try:
     )
     cursor = connection.cursor()
     cursor.execute(
-        """INSERT INTO weather_data (date, cloud_cover, heat_index, humidity, rain, snow, solar_irr, temp, wind)
+        """INSERT INTO weather_data (date, heat_index, humidity, rain, snow, solar_irr, temp, wind)
         VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)""",
-        (utc_time, cloud_cover, heat_index, humidity, rain_rate, snow_rate, solar_irr, temp, wind_speed)
+        (utc_time, heat_index, humidity, rain_rate, snow_rate, solar_irr, temp, wind_speed)
     )
     connection.commit()
     cursor.close()
@@ -107,3 +107,6 @@ try:
     logging.info("Weather data inserted successfully")
 except Exception as e:
     logging.error(f"Error connecting to the database: {e}")
+
+for handler in logging.root.handlers:
+    handler.flush()

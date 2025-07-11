@@ -32,7 +32,8 @@ refresh_response = requests.post(
     },
     headers={"Content-Type": "application/x-www-form-urlencoded"}
 )
-access_token = refresh_response.json()["access_token"]
+refresh_result = refresh_response.json()
+access_token = refresh_result["access_token"]
 
 now = datetime.now(tz=ZoneInfo("America/New_York"))
 start_time = now.replace(hour=0, minute=0, second=0).strftime("%Y-%m-%dT%H:%M:%S")
