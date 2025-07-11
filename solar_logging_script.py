@@ -9,10 +9,14 @@ from zoneinfo import ZoneInfo
 import logging
 import pandas as pd
 
+os.makedirs("logs", exist_ok=True)
+
 logging.basicConfig(
-    filename="logs/solar_logging.log",
     level=logging.INFO,
-    format="%(asctime)s %(levelname)s:%(message)s"
+    format="%(asctime)s %(levelname)s:%(message)s",
+    handlers=[
+        logging.FileHandler("logs/solar_logging.log")
+    ]
 )
 
 load_dotenv()

@@ -8,10 +8,14 @@ from datetime import datetime, timedelta
 from zoneinfo import ZoneInfo
 import logging
 
+os.makedirs("logs", exist_ok=True)
+
 logging.basicConfig(
-    filename="logs/weather_logging.log",
     level=logging.INFO,
-    format="%(asctime)s %(levelname)s:%(message)s"
+    format="%(asctime)s %(levelname)s:%(message)s",
+    handlers=[
+        logging.FileHandler("logs/weather_logging.log")
+    ]
 )
 
 load_dotenv()
