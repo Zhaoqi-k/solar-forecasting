@@ -1,4 +1,4 @@
-name: Solar Script Every Day
+name: OW Weather Script Every Day
 
 on:
     schedule:
@@ -6,7 +6,7 @@ on:
     workflow_dispatch:
 
 jobs:
-    run-solar:
+    run-weather:
         runs-on: ubuntu-latest
 
         steps:
@@ -22,23 +22,20 @@ jobs:
               run: |
                 python -m pip install --upgrade pip
                 pip install -r requirements.txt
-            
-            - name: Run solar_logging.py
+
+            - name: Run openweather_logging.py
               env:
-                SOLAR_CLIENT_ID: ${{ secrets.SOLAR_CLIENT_ID }}
-                SOLAR_CLIENT_SECRET: ${{ secrets.SOLAR_CLIENT_SECRET }}
-                REFRESH_TOKEN: ${{ secrets.REFRESH_TOKEN }}
-                REFRESH_URL: ${{ secrets.REFRESH_URL }}
-                SOLAR_API_URL: ${{ secrets.SOLAR_API_URL }}
+                OW_API_URL: ${{ secrets.OW_API_URL }}
+                OW_API_KEY: ${{ secrets.OW_API_KEY}}
                 DATABASE_USER: ${{ secrets.DATABASE_USER }}
                 DATABASE_PASSWORD: ${{ secrets.DATABASE_PASSWORD }}
                 DATABASE_PORT: ${{ secrets.DATABASE_PORT }}
                 DATABASE_HOST: ${{ secrets.DATABASE_HOST }}
                 DATABASE_NAME: ${{ secrets.DATABASE_NAME }}
-              run: python solar_logging.py
-
+              run: python openweather_logging.py
+            
             - name: Upload log file
               uses: actions/upload-artifact@v4
               with:
-                name: solar-logs
-                path: logs/solar_logging.log
+                name: openweather-logs
+                path: logs/ow_logging.log

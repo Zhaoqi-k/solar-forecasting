@@ -1,8 +1,8 @@
-name: Weather Script Every 5 Minutes
+name: Lville Weather Script Every Day
 
 on:
-    #schedule:
-        #- cron: "*/5 * * * *"
+    schedule:
+        - cron: "30 16 * * *"
     workflow_dispatch:
 
 jobs:
@@ -23,9 +23,8 @@ jobs:
                 python -m pip install --upgrade pip
                 pip install -r requirements.txt
 
-            - name: Run weather_logging_script.py
+            - name: Run lvilleweather_logging.py
               env:
-                OPENWEATHER_API_URL: ${{ secrets.OPENWEATHER_API_URL }}
                 LVILLE_WEATHER_BASE_URL: ${{ secrets.LVILLE_WEATHER_BASE_URL }}
                 LVILLE_USER_AGENT: ${{ secrets.LVILLE_USER_AGENT }}
                 LVILLE_REFERER: ${{ secrets.LVILLE_REFERER }}
@@ -34,10 +33,10 @@ jobs:
                 DATABASE_PORT: ${{ secrets.DATABASE_PORT }}
                 DATABASE_HOST: ${{ secrets.DATABASE_HOST }}
                 DATABASE_NAME: ${{ secrets.DATABASE_NAME }}
-              run: python weather_logging_script.py
+              run: python lvilleweather_logging.py
             
             - name: Upload log file
               uses: actions/upload-artifact@v4
               with:
-                name: weather-logs
-                path: logs/weather_logging.log
+                name: lvilleweather-logs
+                path: logs/lvillew_logging.log

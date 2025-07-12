@@ -5,8 +5,8 @@ from dotenv import load_dotenv
 import requests
 import psycopg2
 from datetime import datetime, timedelta
-from zoneinfo import ZoneInfo
 import logging
+import pytz
 
 os.makedirs("logs", exist_ok=True)
 
@@ -23,11 +23,11 @@ logging.basicConfig(
 
 load_dotenv()
 
-now = datetime.now(tz=ZoneInfo("GMT")) - timedelta(minutes=15)
-start_time = now - timedelta(minutes=4)
+est = pytz.timezone("US/Eastern")
+yesterday = datetime.now(est) - timedelta(days=1)
 
-start_time = start_time.strftime("%a, %d %b %Y %H:%M:%S GMT")
-end_time = now.strftime("%a, %d %b %Y %H:%M:%S GMT")
+start_time = est.localize(datetime(yesterday.year, yesterday.month, yesterday.day, 0, 0, 0)).strftime("%a, %d %b %Y %H:%M:%S")
+end_time = est.localize(datetime(yesterday.year, yesterday.month, yesterday.day, 23, 59, 59)).strftime("%a, %d %b %Y %H:%M:%S")
 
 lville_params = {
                     "dt": "dobs",
@@ -52,42 +52,40 @@ try:
                                     headers=lville_headers
                                     )
     lville_result = lville_response.json()
-    lville_data = lville_result["Result"]["HistoricalObservations"][0]["Observation"]
+    lville_data = lville_result["Result"]["HistoricalObservations"]
 except Exception as e:
     logging.error(f"Error fetching data from Lville API: {e}")
-try:
-    ow_response = requests.get(os.getenv("OPENWEATHER_API_URL"))
-    ow_result = ow_response.json()
-except Exception as e:
-    logging.error(f"Error fetching data from OpenWeather API: {e}")
+
+inserted_data = []
 
 try:
-    obs_utc = lville_data["ObservationTimeUtc"].strip("Z")
-    utc_time = datetime.strptime(obs_utc, "%Y-%m-%dT%H:%M:%S")
-    
-    keys = {
-        "HeatIndexC": "heat_index",
-        "Humidity": "humidity",
-        "RainMillimetersRatePerHour": "rain_rate",
-        "SnowMillimetersRatePerHour": "snow_rate",
-        "SolarIrradiance": "solar_irr",
-        "TemperatureC": "temp",
-        "WindSpeedKph": "wind_speed"
-    }
-    values = {v: lville_data[k]["Value"] for k, v in keys.items()}
-    heat_index = values["heat_index"]
-    humidity = values["humidity"]
-    rain_rate = values["rain_rate"]
-    snow_rate = values["snow_rate"]
-    solar_irr = values["solar_irr"]
-    temp = values["temp"]
-    wind_speed = values["wind_speed"]
+    for entry in lville_data:
+        observation = entry.get("Observation")
+        if not observation:
+            continue
+        obs_utc = observation["ObservationTimeUtc"].strip("Z")
+        utc_time = datetime.strptime(obs_utc, "%Y-%m-%dT%H:%M:%S")
+        if utc_time.minute == 59:
+            rounded_time = (utc_time + timedelta(hours=1)).replace(minute=0, second=0)
+            keys = {
+                "Humidity": "humidity",
+                "RainMillimetersRatePerHour": "rain_rate",
+                "SnowMillimetersRatePerHour": "snow_rate",
+                "SolarIrradiance": "solar_irr",
+                "TemperatureC": "temp",
+                "WindSpeedKph": "wind_speed"
+            }
+            values = {v: observation[k]["Value"] for k, v in keys.items()}
+            values = {}
+            for k, v in keys.items():
+                value = observation.get(k, {}).get("Value")
+                values[v] = value
+            inserted_data.append({
+                "date": rounded_time,
+                **values
+            })
 except Exception as e:
     logging.error(f"Error indexing Lville API data: {e}")
-"""try:
-    cloud_cover = ow_result["clouds"]["all"]
-except Exception as e:
-    logging.error(f"Error indexing OpenWeather API data: {e}")"""
 
 try:
     connection = psycopg2.connect(
@@ -99,10 +97,11 @@ try:
         sslmode = "require"
     )
     cursor = connection.cursor()
-    cursor.execute(
-        """INSERT INTO weather_data (date, heat_index, humidity, rain, snow, solar_irr, temp, wind)
-        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)""",
-        (utc_time, heat_index, humidity, rain_rate, snow_rate, solar_irr, temp, wind_speed)
+    cursor.executemany(
+        """INSERT INTO weather_data (date, humidity, rain, snow, solar_irr, temp, wind)
+        VALUES (%s, %s, %s, %s, %s, %s, %s)""",
+        [(row["date"], row["humidity"], row["rain_rate"], row["snow_rate"],
+      row["solar_irr"], row["temp"], row["wind"]) for row in inserted_data]
     )
     connection.commit()
     cursor.close()

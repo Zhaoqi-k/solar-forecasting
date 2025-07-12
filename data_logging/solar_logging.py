@@ -4,10 +4,10 @@ import os
 from dotenv import load_dotenv
 import requests
 import psycopg2
-from datetime import datetime
-from zoneinfo import ZoneInfo
+from datetime import datetime, timedelta
 import logging
 import pandas as pd
+import pytz
 
 os.makedirs("logs", exist_ok=True)
 
@@ -37,26 +37,28 @@ refresh_response = requests.post(
 refresh_result = refresh_response.json()
 access_token = refresh_result["access_token"]
 
-now = datetime.now(tz=ZoneInfo("America/New_York"))
-start_time = now.replace(hour=0, minute=0, second=0).strftime("%Y-%m-%dT%H:%M:%S")
-end_time = now.replace(hour=23, minute=59, second=0).strftime("%Y-%m-%dT%H:%M:%S")
+est = pytz.timezone("US/Eastern")
+yesterday = datetime.now(est) - timedelta(days=1)
 
-solar_params = {
+start_time = est.localize(datetime(yesterday.year, yesterday.month, yesterday.day, 0, 0, 0)).strftime("%Y-%m-%dT%H:%M:%S")
+end_time = est.localize(datetime(yesterday.year, yesterday.month, yesterday.day, 23, 59, 59)).strftime("%Y-%m-%dT%H:%M:%S")
+
+params = {
         "fields": "W_avg,Wh_sum",
         "start": f"{start_time}",
         "end": f"{end_time}",
         "tz": "US/Eastern",
         "gran": "5min"
     }
-solar_headers = {
+headers = {
         "Accept": "application/json",
         "Authorization": f"Bearer {access_token}"
     }
 try:
     solar_response = requests.get(
         os.getenv("SOLAR_API_URL"),
-        params=solar_params,
-        headers=solar_headers
+        params=params,
+        headers=headers
     )
     solar_result = solar_response.json()
     logging.info(solar_response.url, solar_result)
@@ -83,9 +85,9 @@ try:
     )
     cursor = connection.cursor()
     cursor.executemany(
-        """INSERT INTO solar_data (ts, wh_sum, w_avg)
+        """INSERT INTO solar_data (date, wh_sum, w_avg)
         VALUES (%s, %s, %s)""",
-        listed_data
+        [(row["ts"], row["Wh_sum"], row["W_avg"]) for row in listed_data]
     )
     connection.commit()
     cursor.close()
