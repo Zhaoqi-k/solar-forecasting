@@ -10,7 +10,7 @@ import pytz
 
 os.makedirs("logs", exist_ok=True)
 
-log_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), "logs", "weather_logging.log")
+log_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), "logs", "lvillew_logging.log")
 
 logging.basicConfig(
     level=logging.INFO,

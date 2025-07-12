@@ -35,7 +35,7 @@ jobs:
                 DATABASE_PORT: ${{ secrets.DATABASE_PORT }}
                 DATABASE_HOST: ${{ secrets.DATABASE_HOST }}
                 DATABASE_NAME: ${{ secrets.DATABASE_NAME }}
-              run: python solar_logging.py
+              run: python data_logging/solar_logging.py
 
             - name: Upload log file
               uses: actions/upload-artifact@v4
