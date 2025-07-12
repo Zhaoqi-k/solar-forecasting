@@ -99,10 +99,27 @@ try:
     cursor = connection.cursor()
     cursor.executemany(
         """INSERT INTO weather_data (date, humidity, rain, snow, solar_irr, temp, wind)
-        VALUES (%s, %s, %s, %s, %s, %s, %s)""",
-        [(row["date"], row["humidity"], row["rain_rate"], row["snow_rate"],
-      row["solar_irr"], row["temp"], row["wind"]) for row in inserted_data]
-    )
+        VALUES (%s, %s, %s, %s, %s, %s, %s)
+        ON CONFLICT (date) DO UPDATE SET
+            humidity = EXCLUDED.humidity,
+            rain = EXCLUDED.rain,
+            snow = EXCLUDED.snow,
+            solar_irr = EXCLUDED.solar_irr,
+            temp = EXCLUDED.temp,
+            wind = EXCLUDED.wind
+        """,
+        [
+            (
+                row["date"], 
+                row["humidity"], 
+                row["rain_rate"], 
+                row["snow_rate"], 
+                row["solar_irr"], 
+                row["temp"], 
+                row["wind"]
+            )
+            for row in inserted_data
+        ])
     connection.commit()
     cursor.close()
     connection.close()
