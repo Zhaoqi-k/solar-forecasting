@@ -87,7 +87,7 @@ try:
     cursor.executemany(
         """INSERT INTO solar_data (date, wh_sum, w_avg)
         VALUES (%s, %s, %s)""",
-        [(row["ts"], row["Wh_sum"], row["W_avg"]) for row in listed_data]
+        listed_data
     )
     connection.commit()
     cursor.close()
